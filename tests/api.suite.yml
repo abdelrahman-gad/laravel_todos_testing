@@ -1,0 +1,13 @@
+actor: ApiTester
+modules:
+    enabled:
+        - \Helper\Api
+        - Asserts 
+        - REST:
+            url: http://localhost:8000
+            depends: PhpBrowser
+        - Laravel5:
+            environment_file: .env.testing
+            cleanup: true
+            run_database_migrations: true    
+          
