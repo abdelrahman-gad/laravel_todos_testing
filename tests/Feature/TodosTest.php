@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\User;
+use App\Todo;
 
 class TodosTest extends TestCase
 {
@@ -50,6 +51,23 @@ class TodosTest extends TestCase
             'user_id' => $user->id,
             'name' => 'simple todo'
         ]);
+    }
+
+    public function test_todos_page_displays_todos_list()
+    {
+
+        $user = factory(User::class)->create();
+        $todos = factory(Todo::class,10)->create([
+            'user_id' => $user->id
+        ]);
+      
+
+      $this->actingAs($user)
+            ->get('/todo')
+            ->assertSee(200)
+            ->assertSee($todos->first()->name);
+      
+        
     }
 
 }
