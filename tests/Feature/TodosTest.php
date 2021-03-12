@@ -65,9 +65,26 @@ class TodosTest extends TestCase
       $this->actingAs($user)
             ->get('/todo')
             ->assertSee(200)
-            ->assertSee($todos->first()->name);
-      
-        
+            ->assertSee($todos->first()->name);      
     }
+
+    public function test_user_can_not_see_other_users_todos(){
+        $user = factory(User::class)->create();
+        factory(Todo::class)->create([
+            'user_id' => $user->id
+        ]);
+
+        $user2 = factory(User::class)->create();
+
+        $todo = factory(Todo::class)->create([
+            'user_id' => $user2->id
+        ]);
+
+        $this->actingAs($user)
+              ->get('/todo')
+              ->assertSee(200)
+              ->assertDontSee($todo->name);
+
+    } 
 
 }
