@@ -25,4 +25,16 @@ class BehindScheduleCommandTest extends TestCase
      
        Mail::assertSent(BehindScheduleTodosEmail::class);
     }
+
+    public function test_command_is_not_sending_emails_for_done_todos()
+    {
+        Mail::fake();
+        factory(Todo::class)->create([
+            'status' => Todo::STATUS_DONE,
+            'created_at' => new \DateTime('-1 day'),
+        ]);
+        $this->artisan('todos:behind-schedule');
+
+        Mail::assertNothingSent();
+    }
 }
