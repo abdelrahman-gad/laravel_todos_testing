@@ -127,4 +127,12 @@ class TodosTest extends TestCase
              ]);
        Notification::assertSentTo($user, TodoPostToTwitter::class);      
     }
+
+    public function test_user_can_delete_todo(){
+          $todo = factory(Todo::class )->create();
+          $this->actingAs($todo->user)
+               ->delete('/todo/'.$todo->id);
+        
+          $this->assertDatabaseCount('todos',0);     
+    }
 }
