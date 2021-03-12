@@ -99,4 +99,18 @@ class TodosTest extends TestCase
              ->assertSee($todo->name);
     }
 
+    public function test_user_can_mark_todo_as_done(){
+        $user = factory(User::class)->create();
+        $todo =  factory(Todo::class)->create([
+            'user_id' => $user->id
+        ]);
+
+        $this->actingAs($user)
+             ->put('/todo/'.$todo->id)
+             ->assertStatus(302);
+            
+        $this->assertTrue($todo->fresh()->status == Todo::STATUS_DONE);     
+
+    }
+
 }
