@@ -7,7 +7,8 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\User;
 use App\Todo;
-
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\TodoPostToTwitter;
 class TodosTest extends TestCase
 {
     /**
@@ -113,4 +114,17 @@ class TodosTest extends TestCase
 
     }
 
+    public function test_user_can_publich_todo_to_twitter_when_mark_as_done(){
+        Notification::fake();
+        $user = factory(User::class)->create();
+        $todo =  factory(Todo::class)->create([
+            'user_id' => $user->id
+        ]);
+
+        $this->actingAs($user)
+             ->put('/todo/'.$todo->id,[
+                 'twitter' => true
+             ]);
+       Notification::assertSentTo($user, TodoPostToTwitter::class);      
+    }
 }
